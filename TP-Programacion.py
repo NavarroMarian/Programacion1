@@ -40,20 +40,18 @@ def registrar_jugadores():
     print(jugador1,jugador2)
     return jugador1,jugador2
     
-
 def jugar():
     tablero = inicializarTablero()
     mostrar_tablero(tablero)
     j1,j2 = registrar_jugadores()    
     partida()
     
-    
 def partida():
     pass
 
 def instrucciones():
     try:
-        with open("/home/marian/Documentos/WebCampus/Programacion1/Instrucciones.txt","r") as arch:
+        with open("/Users/cmaio/Desktop/Instrucciones.txt","r") as arch:
             for l in arch:
                 print("\n",l,end="   ")
     except FileNotFoundError as mensaje:
@@ -65,55 +63,62 @@ def instrucciones():
             arch.close( )
         except NameError:
             pass
+    opcion = input('\nPresione una tecla para volver al menu o 0 para salir... ')
+    if opcion == "0":
+        salir()
+    else:
+        menu()
 
-def ranking(jugador_ganador,ganador):
-    '''with open("/home/marian/Documentos/WebCampus/Programacion1/ganadores_historico.txt","r") as archivo:
-        for linea in archivo:
-            print("\n",linea,end="   ")'''
-    if ganador:
-        with open('/home/marian/Documentos/WebCampus/Programacion1/ganadores_historico.txt', 'a') as f:
-            f.write(jugador_ganador)
-            f.write("\n")
-            f.close()
-        with open('/home/marian/Documentos/WebCampus/Programacion1/ganadores_historico.txt', 'r') as f:
-            for players in f:
-                print("\n",players,end="   ")
+def ranking():
+    print("\n\n==========RANKING==========") 
+    d = {}
+    with open("/Users/cmaio/Desktop/ganadores.txt", "r") as f:
+        for linea in f:
+            (key, val) = linea.split()
+            d[int(key)] = val
+    print(d)
+
+    # with open("/Users/cmaio/Desktop/ganadores.txt","r") as archivo:
+    #     for linea in archivo:
+    #         print("\n",linea,end="   ")
+
+    # if ganador:
+    #     with open('/home/marian/Documentos/WebCampus/Programacion1/ganadores_historico.txt', 'a') as f:
+    #         f.write(jugador_ganador)
+    #         f.write("\n")
+    #         f.close()
+    #     with open('/home/marian/Documentos/WebCampus/Programacion1/ganadores_historico.txt', 'r') as f:
+    #         for players in f:
+    #             print("\n",players,end="   ")
+
+def mostrarArchivo(archivo):
+    pass
 
 def salir():
     print("GRACIAS POR ENTRAR A NUESTRO FABULOSO JUEGO")
     input("Presione una tecla para salir...")
     
-    
+def menu():    
+    print("========== Menu ==========") 
+    print("1- JUGAR")
+    print("2- INSTRUCCIONES")
+    print("3- RANKING")
+    print("4- SALIR")
 
-
-print("==========Menu==========") 
-print("1- JUGAR")
-print("2- INSTRUCCIONES")
-print("3- RANKING")
-print("4- SALIR")
-
-jugador_ganador = "Ivan :D"
-ganador = True
-
-
-while True:
-    opcion = int(input("Ingrese opcion:/n"))
-    if opcion == 1:
+    opcion = input("Ingrese opcion:")
+    while opcion.isnumeric() == False or opcion > "4" or opcion < "0": 
+        opcion = (input("Ingrese opcion válida:"))    
+        
+    if opcion == '1':
         jugar()
-    elif opcion == 2:
+    elif opcion == '2':
         instrucciones()
-    elif opcion == 3:
-        ranking(jugador_ganador,ganador)
-    elif opcion == 4:
-         salir()
-         break
+    elif opcion == '3':
+        ranking()
+    elif opcion == '4':
+        salir()
     else:
         print('Ingrese una opcion correcta.')
-
-
-
-
-
 
 def pedir_jugada(jugador_actual, tabla):
     """ 
@@ -133,3 +138,7 @@ def pedir_jugada(jugador_actual, tabla):
     """
     pass
     
+
+#programa principal
+# menu()
+ranking()
