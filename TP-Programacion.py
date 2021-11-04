@@ -51,7 +51,7 @@ def partida():
 
 def instrucciones():
     try:
-        with open("/Users/cmaio/Desktop/Instrucciones.txt","r") as arch:
+        with open("/home/marian/Documentos/WebCampus/Programacion1/Instrucciones.txt","r") as arch:
             for l in arch:
                 print("\n",l,end="   ")
     except FileNotFoundError as mensaje:
@@ -72,7 +72,7 @@ def instrucciones():
 def ranking():
     print("\n\n==========RANKING==========") 
     d = {}
-    with open("/Users/cmaio/Desktop/ganadores.txt", "r") as f:
+    with open("/home/marian/Documentos/WebCampus/Programacion1/ganadores_historico.txt", "r") as f:
         for linea in f:
             (key, val) = linea.split()
             d[int(key)] = val
