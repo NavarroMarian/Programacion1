@@ -18,16 +18,26 @@ VISUALIZACION DE TABLERO
 
 """
 
+FILA = 6
+COLUMNA = 7
+
 def inicializarTablero () :
-    return [['?'] * 7 for i in range(6)]
+    return [[0] * 7 for i in range(6)]
     
 def mostrar_tablero(tabla):
     for i in tabla:
         print()
         for j in i:
-            estado = 'vacio'
-            print(' %s '% estado, end='')
-    print()
+            print(' %s '% j, end='')
+
+def posicion_vacia(tablero,columna):
+    return tablero[FILA-1][columna] == 0
+
+def posicion_en_fila_ocupado(tablero,fila,columna):
+    return fila if tablero[fila][columna] is 0 else posicion_en_fila_ocupado(tablero,fila-1,columna)
+
+def ficha_en_tablero(tablero,fila, columna, ficha):
+    tablero[fila][columna] = ficha
 
 def registrar_jugadores():
     print("Jugador 1\n")
@@ -40,14 +50,36 @@ def registrar_jugadores():
     print(jugador1,jugador2)
     return jugador1,jugador2
     
-def jugar():
-    tablero = inicializarTablero()
+def jugar(tablero):
     mostrar_tablero(tablero)
-    j1,j2 = registrar_jugadores()    
-    partida()
+    #j1,j2 = registrar_jugadores()
+    partida(tablero)
     
-def partida():
-    pass
+def partida(tablero):
+    print("\n\n========== EMPIEZA PARTIDA ==========") 
+    partida_finalizada , turno= False ,0
+    fila=FILA-1
+
+    while not partida_finalizada:
+
+        if turno == 0:
+            columna = int(input("\nJUGADOR 1, ingrese su jugada (1-7): "))
+            columna-=1
+            if posicion_vacia(tablero,columna):
+                fila = posicion_en_fila_ocupado(tablero,fila,columna)
+                ficha_en_tablero(tablero,fila, columna, ficha=1) #LA FILA CAMBIA VERIFICAR COMO , VER COMO MANDAR CARACTER
+                mostrar_tablero(tablero)
+                turno+=1
+        else:
+            columna = int(input("\nJUGADOR 2, ingrese su jugada (1-7): "))
+            columna-=1
+            if posicion_vacia(tablero,columna):
+                fila = posicion_en_fila_ocupado(tablero,fila,columna)
+                ficha_en_tablero(tablero,fila, columna, ficha=2)
+                mostrar_tablero(tablero)
+                turno = 0
+
+
 
 def instrucciones():
     try:
@@ -110,7 +142,7 @@ def menu():
         opcion = (input("Ingrese opcion válida:"))    
         
     if opcion == '1':
-        jugar()
+        jugar(tablero)
     elif opcion == '2':
         instrucciones()
     elif opcion == '3':
@@ -139,6 +171,7 @@ def pedir_jugada(jugador_actual, tabla):
     pass
     
 
-#programa principal
-# menu()
-ranking()
+######################################## PROGRAMA PRINCIPAL ########################################
+tablero = inicializarTablero()
+menu()
+#ranking()
