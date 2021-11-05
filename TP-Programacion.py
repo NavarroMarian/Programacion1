@@ -36,17 +36,26 @@ def mostrar_tablero(tabla):
             print(' %s '% j, end='')
 
 def posicion_vacia(tablero,columna):
+    """Consulta si la ultima posicion de la columna esta ocupada."""
     return tablero[0][columna] == 0 if columna < 7 else False
 
 
 def posicion_en_fila_ocupado(tablero,fila,columna):
+    """Verifica si la [fila][columna] esta ocupada, 
+        si no lo esta retorna fila,
+        sino se repite funcion hasta la siguiente fila desocupada."""
+
     return fila if tablero[fila][columna] is 0 else posicion_en_fila_ocupado(tablero,fila-1,columna)
 
 def ficha_en_tablero(tablero,fila, columna, ficha):
+    """Añade ficha en tablero."""
     tablero[fila][columna] = ficha
 
 
 def sera_o_nosera_ganador(tablero,j1,j2):
+    """Verifica si el jugador junto las 4 fichas en diagonal, vertical o horizontal.
+        Si las junto es GANADOR.
+        Caso contrario, sigue jugando. """
     filas = len(tablero)
     columnas = len(tablero[0])
     for f in range(filas):
@@ -86,22 +95,26 @@ def partida(tablero):
         fila=FILA-1
 
         if turno == 0:
-            columna = int(input("\nJUGADOR 1, ingrese su jugada (1-7): ")) #no tiene en consideracion si entra 8 o 0
+            columna = int(input("\nJUGADOR 1, ingrese su jugada (1-7): "))
             columna-=1
-            if posicion_vacia(tablero,columna):
-                fila = posicion_en_fila_ocupado(tablero,fila,columna)
+            if posicion_vacia(tablero,columna): 
+                """Si posicion_vacia(tablero,columna) es True pide ingreso de ficha y la ubica donde esta desocupado,
+                en caso de partida_finalizada = sera_o_nosera_ganador(tablero,j1,j2) ser True GANADOR y termina partida."""
+
+                fila = posicion_en_fila_ocupado(tablero,fila,columna) 
                 ficha_en_tablero(tablero,fila, columna, ficha=j1[1])
                 mostrar_tablero(tablero)
-                partida_finalizada = sera_o_nosera_ganador(tablero,j1,j2)
-                turno=1
+                partida_finalizada = sera_o_nosera_ganador(tablero,j1,j2) 
+                turno=1 
             else:
+                """Si posicion_vacia(tablero,columna) es False viene aca y se vuelve a solicitar que ingrese columna nuevamente"""
                 turno = 0
-                print("\nNO EXISTE LA COLUMNA ", columna, ". INGRESE UN VALOR CORRECTO")
+                print("\nNO EXISTE LA COLUMNA ", columna, ". INGRESE UN VALOR CORRECTO") 
                 
         else:
             columna = int(input("\nJUGADOR 2, ingrese su jugada (1-7): "))
             columna-=1
-            if posicion_vacia(tablero,columna):
+            if posicion_vacia(tablero,columna): 
                 fila = posicion_en_fila_ocupado(tablero,fila,columna)
                 ficha_en_tablero(tablero,fila, columna, ficha=j2[1])
                 mostrar_tablero(tablero)
