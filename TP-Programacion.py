@@ -36,7 +36,8 @@ def mostrar_tablero(tabla):
             print(' %s '% j, end='')
 
 def posicion_vacia(tablero,columna):
-    return  tablero[0][columna] == 0
+    return tablero[0][columna] == 0 if columna < 7 else False
+
 
 def posicion_en_fila_ocupado(tablero,fila,columna):
     return fila if tablero[fila][columna] is 0 else posicion_en_fila_ocupado(tablero,fila-1,columna)
@@ -93,6 +94,9 @@ def partida(tablero):
                 mostrar_tablero(tablero)
                 partida_finalizada = sera_o_nosera_ganador(tablero,j1,j2)
                 turno=1
+            else:
+                turno = 0
+                print("\nNO EXISTE LA COLUMNA ", columna, ". INGRESE UN VALOR CORRECTO")
                 
         else:
             columna = int(input("\nJUGADOR 2, ingrese su jugada (1-7): "))
@@ -103,6 +107,11 @@ def partida(tablero):
                 mostrar_tablero(tablero)
                 partida_finalizada = sera_o_nosera_ganador(tablero,j1,j2)
                 turno = 0
+            else:
+                turno = 1
+                print("\nNO EXISTE LA COLUMNA ", columna, ".INGRESE UN VALOR CORRECTO.")
+        
+    return menu()
 
 
 ######################################## OPCIONES DE MENU ########################################
