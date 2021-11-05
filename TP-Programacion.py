@@ -64,13 +64,13 @@ def sera_o_no_sera_ganador(tablero,j1,j2):
             if tablero[f][c] == j1[1] or tablero[f][c] == j2[1]:
                 fichaX = tablero[f][c]
                 if fichaX == tablero[f-1][c-1] and fichaX == tablero[f-2][c-2] and fichaX == tablero[f-3][c-3]:#SE REVISA DIAGONALES
-                    print("GANADOR DEL NADA PERO GANADOR AL FIN")
+                    print("\nGANADOR DEL NADA PERO GANADOR AL FIN\n")
                     return True
                 elif fichaX == tablero[f][c-1] and fichaX == tablero[f][c-2] and fichaX == tablero[f][c-3]:#SE REVISA HORIZONTALES
-                    print("GANADOR DE NADA PERO GANADOR AL FIN")
+                    print("\nGANADOR DE NADA PERO GANADOR AL FIN\n")
                     return True
                 elif fichaX == tablero[f-1][c] and fichaX == tablero[f-2][c] and fichaX == tablero[f-3][c]:#SE REVISA VERTICALES
-                    print("GANADOR DE NADA PERO GANADOR AL FIN")
+                    print("\nGANADOR DE NADA PERO GANADOR AL FIN\n")
                     return True
             
     return False
@@ -125,11 +125,11 @@ def partida(tablero):
                 turno = 1
                 print("\nNO EXISTE LA COLUMNA ", columna, ".INGRESE UN VALOR CORRECTO.")
 
-        print("\n\n========== GAME OVER ==========")
-        print("\n\n GANADOR DE PARTIDA:", j2[0] if turno == 0 else j1[0])
-        #-----------SI LES PARECE , ACA PUEDE GUARDAR GANADOR EN ARCHIVOS-----------
-    return menu()
+    print("\n\n========== GAME OVER ==========")
+    print("\nGANADOR DE PARTIDA:", j2[0] if turno == 0 else j1[0],"\n")
+    #-----------SI LES PARECE , ACA PUEDE GUARDAR GANADOR EN ARCHIVOS-----------
 
+    return menu()
 
 ######################################## OPCIONES DE MENU ########################################
 
@@ -190,7 +190,9 @@ def salir():
 
 ######################################## FUNCION MANU ########################################
     
-def menu():    
+def menu():   
+    tablero = inicializarTablero()
+
     print("========== Menu ==========") 
     print("1- JUGAR")
     print("2- INSTRUCCIONES")
@@ -211,7 +213,6 @@ def menu():
         salir()
 
 ######################################## PROGRAMA PRINCIPAL ########################################
-tablero = inicializarTablero()
 menu()
 
 
