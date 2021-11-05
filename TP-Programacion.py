@@ -43,7 +43,8 @@ def posicion_vacia(tablero,columna):
 def posicion_en_fila_ocupado(tablero,fila,columna):
     """Verifica si la [fila][columna] esta ocupada, 
         si no lo esta retorna fila,
-        sino se repite funcion hasta la siguiente fila desocupada."""
+        sino se repite funcion hasta la siguiente fila desocupada. 
+        Se usa RECURSIVIDAD"""
 
     return fila if tablero[fila][columna] is 0 else posicion_en_fila_ocupado(tablero,fila-1,columna)
 
@@ -52,7 +53,7 @@ def ficha_en_tablero(tablero,fila, columna, ficha):
     tablero[fila][columna] = ficha
 
 
-def sera_o_nosera_ganador(tablero,j1,j2):
+def sera_o_no_sera_ganador(tablero,j1,j2):
     """Verifica si el jugador junto las 4 fichas en diagonal, vertical o horizontal.
         Si las junto es GANADOR.
         Caso contrario, sigue jugando. """
@@ -104,7 +105,7 @@ def partida(tablero):
                 fila = posicion_en_fila_ocupado(tablero,fila,columna) 
                 ficha_en_tablero(tablero,fila, columna, ficha=j1[1])
                 mostrar_tablero(tablero)
-                partida_finalizada = sera_o_nosera_ganador(tablero,j1,j2) 
+                partida_finalizada = sera_o_no_sera_ganador(tablero,j1,j2) 
                 turno=1 
             else:
                 """Si posicion_vacia(tablero,columna) es False viene aca y se vuelve a solicitar que ingrese columna nuevamente"""
@@ -118,12 +119,15 @@ def partida(tablero):
                 fila = posicion_en_fila_ocupado(tablero,fila,columna)
                 ficha_en_tablero(tablero,fila, columna, ficha=j2[1])
                 mostrar_tablero(tablero)
-                partida_finalizada = sera_o_nosera_ganador(tablero,j1,j2)
+                partida_finalizada = sera_o_no_sera_ganador(tablero,j1,j2)
                 turno = 0
             else:
                 turno = 1
                 print("\nNO EXISTE LA COLUMNA ", columna, ".INGRESE UN VALOR CORRECTO.")
-        
+
+        print("\n\n========== GAME OVER ==========")
+        print("\n\n GANADOR DE PARTIDA:", j2[0] if turno == 0 else j1[0])
+        #-----------SI LES PARECE , ACA PUEDE GUARDAR GANADOR EN ARCHIVOS-----------
     return menu()
 
 
