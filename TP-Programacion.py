@@ -18,8 +18,13 @@ VISUALIZACION DE TABLERO
 
 """
 
+from typing import Collection
+
+
 FILA = 6
 COLUMNA = 7
+
+######################################## LOGICA DE JUEGO ########################################
 
 def inicializarTablero () :
     return [[0] * 7 for i in range(6)]
@@ -31,13 +36,33 @@ def mostrar_tablero(tabla):
             print(' %s '% j, end='')
 
 def posicion_vacia(tablero,columna):
-    return tablero[FILA-1][columna] == 0
+    return  tablero[0][columna] == 0
 
 def posicion_en_fila_ocupado(tablero,fila,columna):
     return fila if tablero[fila][columna] is 0 else posicion_en_fila_ocupado(tablero,fila-1,columna)
 
 def ficha_en_tablero(tablero,fila, columna, ficha):
     tablero[fila][columna] = ficha
+
+
+def sera_o_nosera_ganador(tablero,j1,j2):
+    filas = len(tablero)
+    columnas = len(tablero[0])
+    for f in range(filas):
+        for c in range(columnas):
+            if tablero[f][c] == j1[1] or tablero[f][c] == j2[1]:
+                fichaX = tablero[f][c]
+                if fichaX == tablero[f-1][c-1] and fichaX == tablero[f-2][c-2] and fichaX == tablero[f-3][c-3]:#SE REVISA DIAGONALES
+                    print("GANADOR DEL NADA PERO GANADOR AL FIN")
+                    return True
+                elif fichaX == tablero[f][c-1] and fichaX == tablero[f][c-2] and fichaX == tablero[f][c-3]:#SE REVISA HORIZONTALES
+                    print("GANADOR DE NADA PERO GANADOR AL FIN")
+                    return True
+                elif fichaX == tablero[f-1][c] and fichaX == tablero[f-2][c] and fichaX == tablero[f-3][c]:#SE REVISA VERTICALES
+                    print("GANADOR DE NADA PERO GANADOR AL FIN")
+                    return True
+            
+    return False
 
 def registrar_jugadores():
     print("Jugador 1\n")
@@ -47,39 +72,44 @@ def registrar_jugadores():
     while jugador2[1] == jugador1[1]:
         jugador2 = (jugador2[0],input("Seleccione un caracter diferente\n"))
 
-    print(jugador1,jugador2)
+    print(f"{jugador1[0]} jugarás con {jugador1[1]}, {jugador2[0]} jugarás con {jugador2[1]}")
     return jugador1,jugador2
-    
-def jugar(tablero):
-    mostrar_tablero(tablero)
-    #j1,j2 = registrar_jugadores()
-    partida(tablero)
+   
     
 def partida(tablero):
-    print("\n\n========== EMPIEZA PARTIDA ==========") 
+    print("\n\n========== EMPIEZA PARTIDA ==========")
+    j1,j2 = registrar_jugadores()
     partida_finalizada , turno= False ,0
-    fila=FILA-1
 
     while not partida_finalizada:
+        fila=FILA-1
 
         if turno == 0:
-            columna = int(input("\nJUGADOR 1, ingrese su jugada (1-7): "))
+            columna = int(input("\nJUGADOR 1, ingrese su jugada (1-7): ")) #no tiene en consideracion si entra 8 o 0
             columna-=1
             if posicion_vacia(tablero,columna):
                 fila = posicion_en_fila_ocupado(tablero,fila,columna)
-                ficha_en_tablero(tablero,fila, columna, ficha=1) #LA FILA CAMBIA VERIFICAR COMO , VER COMO MANDAR CARACTER
+                ficha_en_tablero(tablero,fila, columna, ficha=j1[1])
                 mostrar_tablero(tablero)
-                turno+=1
+                partida_finalizada = sera_o_nosera_ganador(tablero,j1,j2)
+                turno=1
+                
         else:
             columna = int(input("\nJUGADOR 2, ingrese su jugada (1-7): "))
             columna-=1
             if posicion_vacia(tablero,columna):
                 fila = posicion_en_fila_ocupado(tablero,fila,columna)
-                ficha_en_tablero(tablero,fila, columna, ficha=2)
+                ficha_en_tablero(tablero,fila, columna, ficha=j2[1])
                 mostrar_tablero(tablero)
+                partida_finalizada = sera_o_nosera_ganador(tablero,j1,j2)
                 turno = 0
 
 
+######################################## OPCIONES DE MENU ########################################
+
+def jugar(tablero):
+    mostrar_tablero(tablero)
+    partida(tablero)
 
 def instrucciones():
     try:
@@ -126,9 +156,13 @@ def ranking():
 def mostrarArchivo(archivo):
     pass
 
+
 def salir():
     print("GRACIAS POR ENTRAR A NUESTRO FABULOSO JUEGO")
     input("Presione una tecla para salir...")
+    
+
+######################################## FUNCION MANU ########################################
     
 def menu():    
     print("========== Menu ==========") 
@@ -137,9 +171,9 @@ def menu():
     print("3- RANKING")
     print("4- SALIR")
 
-    opcion = input("Ingrese opcion:")
+    opcion = input("Ingrese opcion: ")
     while opcion.isnumeric() == False or opcion > "4" or opcion < "0": 
-        opcion = (input("Ingrese opcion válida:"))    
+        opcion = (input("Ingrese opcion válida: "))    
         
     if opcion == '1':
         jugar(tablero)
@@ -149,29 +183,7 @@ def menu():
         ranking()
     elif opcion == '4':
         salir()
-    else:
-        print('Ingrese una opcion correcta.')
-
-def pedir_jugada(jugador_actual, tabla):
-    """ 
-    Sarasa
-    """
-
-    # jugador_actual determinaria el caracter a posicionar en la tabla (?)
-    # tabla recibe el estado actual del tablero de juego
-
-    """ 
-    jugada = -1
-    while jugada not in range(len(tabla[0])):
-        print(f'Jugador  {jugador_actual}')
-        jugada = input('Ingrese una columna para jugar')    
-    
-    invocar_jugada(jugada, tabla)
-    """
-    pass
-    
 
 ######################################## PROGRAMA PRINCIPAL ########################################
 tablero = inicializarTablero()
 menu()
-#ranking()
