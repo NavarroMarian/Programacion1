@@ -187,3 +187,7 @@ def menu():
 ######################################## PROGRAMA PRINCIPAL ########################################
 tablero = inicializarTablero()
 menu()
+
+
+
+# Hola! Probando 1, 2, 3, 1, 2, 3
