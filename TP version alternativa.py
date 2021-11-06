@@ -131,14 +131,8 @@ def partida(tablero):
     j1, j2 = registrar_jugadores()
 
     jugadores = {
-      0: {
-        'nombre':j1[0],
-        'ficha': j1[1]
-      },
-      1:{
-        'nombre':j2[0],
-        'ficha': j2[1]
-      },
+      0: { 'nombre':j1[0], 'ficha': j1[1] },
+      1: { 'nombre':j2[0], 'ficha': j2[1] }
     }
 
     cantidad_columnas = len(tablero[0])
