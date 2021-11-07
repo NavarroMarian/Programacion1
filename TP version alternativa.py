@@ -28,8 +28,6 @@ VACIO = '-'
 def comenzar():
     return input('Ingrese "Y" para jugar 4 en linea\n\t=> ') in ['y', 'Y']
 
-# comenzar = lambda: input('Ingrese "Y" para jugar 4 en linea\n\t=> ') in ['y', 'Y']
-
 ######################################## LOGICA DE JUEGO ########################################
 
 
@@ -42,6 +40,7 @@ def mostrar_tablero(tabla):
         print()
         for j in i:
             print(' %s ' % j, end='')
+    print()
 
 
 def posicion_vacia(tablero, columna):
@@ -63,10 +62,37 @@ def ficha_en_tablero(tablero, fila, columna, ficha):
     tablero[fila][columna] = ficha
 
 
+def conteo_vacios(tabla):
+    espacios_vacios = 0
+    for i in tabla:
+        for j in i:
+            if j == VACIO:
+                espacios_vacios = espacios_vacios + 1
+
+    return espacios_vacios
+
+
+def verificar_espacios_tablero(tabla):
+    """
+        Devuelve si True o False en base a si el tablero proporcionado esta completo.
+    """
+    esta_completo = True
+
+    for i in tabla:
+        for j in i:
+            if j == VACIO:
+                esta_completo = False
+                break
+
+    return esta_completo
+
+
 def hubo_ganador(tablero, j1, j2):
-    """Verifica si el jugador junto las 4 fichas en diagonal, vertical o horizontal.
+    """
+        Verifica si el jugador junto las 4 fichas en diagonal, vertical o horizontal.
         Si las junto es GANADOR.
-        Caso contrario, sigue jugando. """
+        Caso contrario, sigue jugando.
+    """
     filas, columnas = len(tablero), len(tablero[0])
     hubo_ganador = False
 
@@ -74,34 +100,49 @@ def hubo_ganador(tablero, j1, j2):
     for f in range(filas):
         for c in range(columnas):
             # Si la posicion del tablero es igual a la ficha de un jugador, tomaremos esa ficha y realizaremos las verificaciones
-            if tablero[f][c] == j1[1] or tablero[f][c] == j2[1]:
+            if tablero[f][c] != VACIO:
+                # fichaX es la jugada de algun jugador, tomaremos su posicion para pivotear con el.
                 fichaX = tablero[f][c]
 
+                # Cualquiera de las igualdades verificara que hubo ganador y no sera necesario seguir recorriendo el tablero
+                # Ademas verificamos que no estamos comparando indices opuestos (ej: ganador con columnas  -1, 0, 1, 2)
+                # La verificacion de igualdad la hacemos sustrayendo unidades al indice, por lo que la fila o columna debe ser siempre mayor a 3 para tener indices como minmo "3, 2, 1, 0"
                 if (
-                    # Diagonales
-                    fichaX == tablero[f-1][c-1] == tablero[f-2][c-2] == tablero[f-3][c-3] or
-                    # Horizontales
-                    fichaX == tablero[f][c-1] == tablero[f][c-2] == tablero[f][c-3] or
-                    # Verticales
-                    fichaX == tablero[f-1][c] == tablero[f-2][c] == tablero[f-3][c]
+                    # Verificacion de Diagonales
+                    ((f> 2 and c > 2) and fichaX == tablero[f-1][c-1] == tablero[f-2][c-2] == tablero[f-3][c-3] ) or
+                    # ... Horizontales
+                    (c > 2 and fichaX == tablero[f][c-1] == tablero[f][c-2] == tablero[f][c-3]) or
+                    # ... Verticales
+                    (f > 2 and fichaX == tablero[f-1][c] == tablero[f-2][c] == tablero[f-3][c])
                 ):
-                    # Cualquiera de las igualdades verificara que hubo ganador y no sera necesario seguir recorriendo el tablero
                     hubo_ganador = True
                     break
     return hubo_ganador
 
+def verificar_validez_segun_lista(string_a_validar: str, lista_invalidos=[]):
+    """
+        Retorna el string en caso de ser validado contra la lista proporcionada
+    """
+    if string_a_validar.strip() in lista_invalidos:
+        return verificar_validez_segun_lista(input('Valor invalido o tomado, seleccione otro valor\n=> '), lista_invalidos)
+    else:
+        lista_invalidos.append(string_a_validar.strip())
+        return string_a_validar
+
 
 def registrar_jugadores():
-    print("Jugador 1\n")
-    jugador1 = (input("Ingrese nombre:\n"),
-                input("Con que caracter jugara?\n"))
-    print("Jugador 2\n")
-    jugador2 = (input("Ingrese nombre:\n"),
-                input("Con que caracter jugara?\n"))
-    while jugador1[0] == jugador2[0]:
-        jugador2 = (input("Seleccione un nombre diferente al del jugador 1\n"), jugador2[0])
-    while jugador1[1] == jugador2[1]:
-        jugador2 = (jugador2[0], input("Seleccione un caracter diferente al del jugador 1\n"))
+    nombres_invalidos = ['']
+    caracteres_invalidos = ['', VACIO]
+
+    jugador1 = (
+        verificar_validez_segun_lista( input("Ingrese NOMBRE para jugador 1:\n"), nombres_invalidos ),
+        verificar_validez_segun_lista( input("Ingrese UN CARACTER para jugador 1:\n")[0], caracteres_invalidos)
+    )
+
+    jugador2 = (
+        verificar_validez_segun_lista( input("Ingrese NOMBRE para jugador 2:\n"), nombres_invalidos ),
+        verificar_validez_segun_lista( input("Ingrese UN CARACTER para jugador 2:\n")[0], caracteres_invalidos )
+    )
 
     print(
         f"{jugador1[0]} jugarás con {jugador1[1]}, {jugador2[0]} jugarás con {jugador2[1]}")
@@ -110,15 +151,16 @@ def registrar_jugadores():
 
 def siguiente_turno(turno_actual):
     """
-    Alterna entre los turnos de los jugadores
+        Alterna entre los turnos de los jugadores
     """
     return 0 if turno_actual else 1
+
 
 def validar_columna_jugada(columna, maximo_columnas):
   """
     Validara si el usuario ingreso un valor del rango correcto, devuelve la posicion de la columna
   """
-  while columna not in map(lambda n: str(n), range(maximo_columnas+1)):
+  while columna not in map(lambda n: str(n), range(1, maximo_columnas+1)):
     columna = input("Ingrese una opcion valida (1-7)\n\t=> ")
   else:
     columna = int(columna)
@@ -126,23 +168,59 @@ def validar_columna_jugada(columna, maximo_columnas):
     return columna
 
 
-def partida(tablero):
-    print("\n\n========== EMPIEZA PARTIDA ==========")
-    j1, j2 = registrar_jugadores()
+def mostrar_cartel(titulo:str, mensaje:str):
+    titulo_espaciado = ' ' + titulo + ' '
+    largo_msj = mensaje
 
+    largo_cartel = len(titulo_espaciado)+4 if len(titulo_espaciado) > len(largo_msj) else len(largo_msj)+4
+
+    print(
+        '',
+        f"╔{titulo_espaciado.center(largo_cartel, '═')}╗",
+        f"║{''.center(largo_cartel, ' ')}║",
+        f"║{mensaje.center(largo_cartel, ' ')}║",
+        f"║{''.center(largo_cartel, ' ')}║",
+        f"╚{''.center(largo_cartel, '═')}╝",
+        sep="\n"
+    )
+
+
+def mostrar_ganador(nombre_ganador=None):
+    """
+        Mostrara por consola el mensaje de ganador, en tanto se proporcione.
+    """
+    mensaje:str = 'HUBO UN EMPATE!'
+    if nombre_ganador:
+        mensaje = f"JUGADOR {nombre_ganador} ES EL GANADOR DE LA PARTIDA!"
+
+    mostrar_cartel("FIN DEL JUEGO", mensaje)
+
+
+
+def partida(tablero):
+    j1, j2 = registrar_jugadores()
+    print("\n\n========== EMPIEZA PARTIDA ==========")
+
+    # Jugadores guarda los valores de nombre y turno que se hayan seleccionado para los jugadores, la key corresponde a su turno (j1 = turno 0, j2 = turno 1)
     jugadores = {
-      0: { 'nombre':j1[0], 'ficha': j1[1] },
-      1: { 'nombre':j2[0], 'ficha': j2[1] }
+      0: {
+            'nombre':j1[0],
+            'ficha': j1[1]
+        },
+      1: {
+            'nombre':j2[0],
+            'ficha': j2[1]
+        }
     }
 
     cantidad_columnas = len(tablero[0])
-    turno = 1
+    turno = 0
 
-    while not hubo_ganador(tablero, j1, j2):
-        turno = siguiente_turno(turno)
+    while not verificar_espacios_tablero(tablero):
+        # Correccion de fila
         fila = FILA-1
         columna = validar_columna_jugada(
-            input(f"\nJUGADOR {jugadores.get(turno).get('nombre')}, ingrese su jugada (1-7): "),
+            input( f"\nJUGADOR {jugadores.get(turno).get('nombre')}, ingrese su jugada (1-7): "),
             cantidad_columnas
         )
 
@@ -150,19 +228,22 @@ def partida(tablero):
             fila = posicion_en_fila_ocupado(tablero, fila, columna)
             ficha_en_tablero(tablero, fila, columna, ficha=jugadores.get(turno).get('ficha'))
             mostrar_tablero(tablero)
+
+            if hubo_ganador(tablero, j1, j2):
+                mostrar_ganador(jugadores.get(turno).get('nombre'))
+                break
+            else:
+                turno = siguiente_turno(turno)
         else:
             print("\nINGRESE VALOR VALIDO")
             # Al ingresar un valor invalido, no se jugo ficha, entonces forzamos el alternado de turno para que vuelva a jugar el mismo jugador, solo en este caso
-            turno = siguiente_turno(turno)
     else:
-      print("\n\n========== GAME OVER ==========\n")
-      print(f"JUGADOR {turno+1} ES EL GANADOR DE LA PARTIDA: {jugadores.get(turno).get('nombre')}!")
-      print("\n========== ========= ==========\n")
+        mostrar_ganador()
 
     # -----------SI LES PARECE , ACA PUEDE GUARDAR GANADOR EN ARCHIVOS-----------
 
     # Logica para volver a jugar
-    return menu() if input('Ingrese Y para volver a jugar\n\t=>') in ['Y', 'y'] else print('Gracias por jugar!')
+    return menu() if input('Ingrese Y para al menu\n\t=>') in ['Y', 'y'] else print('Gracias por jugar!')
 
 ######################################## OPCIONES DE MENU ########################################
 
@@ -176,30 +257,28 @@ def jugar():
 
 def instrucciones():
     try:
-        with open("/home/marian/Documentos/WebCampus/Programacion1/Instrucciones.txt", "r") as arch:
+        with open("./Instrucciones.txt", "r", encoding="utf8") as arch:
             for l in arch:
-                print("\n", l, end="   ")
+                print(l)
     except FileNotFoundError as mensaje:
-        print("No se puede abrir el archivo:", mensaje)
+        print("Archivo no encontrado:", mensaje)
     except OSError as mensaje:
         print("No se puede leer el archivo:", mensaje)
     finally:
         try:
             arch.close()
         except NameError:
-            pass
-    opcion = input(
-        '\nPresione una tecla para volver al menu o 0 para salir... ')
-    if opcion == "0":
+            pass 
+    if input('\nPresione una tecla para volver al menu o 0 para salir...\n\t=> ') == "0":
         despedir()
     else:
         menu()
 
 
 def ranking():
-    print("\n\n==========RANKING==========")
+    print("\n\n========== RANKING ==========")
     d = {}
-    with open("/home/marian/Documentos/WebCampus/Programacion1/ganadores_historico.txt", "r") as f:
+    with open("./ganadores_historico.txt", "r", encoding="utf8") as f:
         for linea in f:
             (key, val) = linea.split()
             d[int(key)] = val
@@ -224,12 +303,12 @@ def mostrarArchivo(archivo):
 
 
 def despedir():
-    print("GRACIAS POR ENTRAR A NUESTRO FABULOSO JUEGO")
+    mostrar_cartel('Adios!', "GRACIAS POR ENTRAR A NUESTRO FABULOSO JUEGO")
     input("Presione una tecla para salir...")
     return False
 
 
-######################################## FUNCION MANU ########################################
+######################################## FUNCION MENU ########################################
 
 def menu():
     print("========== Menu ==========")
@@ -237,6 +316,8 @@ def menu():
     print("2- INSTRUCCIONES")
     print("3- RANKING")
     print("4- SALIR")
+    print("==========================")
+
 
     opcion = input("Ingrese opcion: ")
     while opcion not in map(lambda x: str(x), range(1, 5)):
@@ -272,9 +353,9 @@ def menu():
 
 ######################################## PROGRAMA PRINCIPAL ########################################
 print()
-print('Bienvenido a nuestro juego!'.upper())
+mostrar_cartel('4 EN RAYA','Bienvenido a nuestro juego!'.upper())
 while comenzar():
-    # Menu arrojara Falso solo al salir del juego
+    # Menu arrojara False al salir del juego desde alguna de las opciones "in game"
     if not menu():
         break
 else:
