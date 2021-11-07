@@ -68,7 +68,7 @@ def mostrar_separador_seccion(nombre_seccion=None, interlineado=1):
 
     if interlineado:
         print("\n"*interlineado)
-    print(nombre_seccion.center(35, '═'))
+    print(nombre_seccion.center(50, '═'))
 
 
 
