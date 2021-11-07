@@ -1,0 +1,5 @@
+Alberto,2
+Norberto,2
+Humberto,6
+Gilberto,10
+Roberto,1
