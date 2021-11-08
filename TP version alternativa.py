@@ -445,3 +445,5 @@ mostrar_separador_seccion('4 EN RAYA')
 mostrar_cartel('INTEGRANTES GRUPO 11', "Ivan Samokec, Carolina Maio, Mariana Navarro, Ramon Irala")
 if input('Ingrese "Y" para ir al menu principal\n\t» ') in ['y', 'Y']:
     menu()
+else:
+    mostrar_cartel('Adios', 'GRACIAS POR (no) JUGAR!')
